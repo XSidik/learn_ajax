@@ -36,5 +36,9 @@ This project demonstrates how to use AJAX to call an API and display the data in
 3. open localhost:8000 in browser.
 4. The data will be fetched and displayed in a table format.
 
+## Note
+This project serves as the frontend for the project [netcore_api](https://github.com/XSidik/netcore_api.git).  
+Ensure that the backend API is running to fetch and display data correctly.
+
 ## Contact
 For any questions or feedback, please contact [nursidik.2427@gmail.com].
