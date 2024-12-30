@@ -1,237 +1,341 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.3/dist/sweetalert2.min.css" rel="stylesheet">
 
+  <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/extensions/export/bootstrap-table-export.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
-    <title>Test Nursidik</title>
-  </head>
-  <body>
-      <div class="container mt-5">
-        <h1>Data Employee</h1>
-        <button type="button" class="btn btn-outline-primary" id="AddModal">Add Employee</button>
-        <br>   
-        <table
-        id="table"
-        data-toggle="table"
-        data-url="https://localhost:5001/api/Employee"
-         class="table table-bordered table-sm mt-4">
-            <thead>
-            <tr>
-                <th data-field="idx">ID</th>
-                <th data-field="name">Name</th>
-                <th data-field="age">Age</th>
-                <th class="text-center py-0" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents">Action</th>
-            </tr>
-            </thead>           
-        </table>
-    </div>
- 
-    <!--modal add employee-->
-    <div class="modal hide" id="AddUpEmployee" tabindex="-1" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Employee</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <title>learning AJAX</title>
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h1>Data Employee</h1>
+    <button type="button" class="btn btn-primary" id="InsertModal">Add Employee</button>
+    <br>
+    <table id="table" data-toggle="table" class="table table-bordered table-sm mt-4"
+      data-url="http://localhost:5000/api/Employee" data-pagination="true" data-search="true"
+      data-side-pagination="client" data-method="get" data-response-handler="responseHandler"
+      data-page-list="[10, 25, 50, 100, all]" data-show-export="true">
+      <thead>
+        <tr>
+          <th data-field="no">No</th>
+          <th data-field="name">Name</th>
+          <th class="text-center" data-field="age">Age</th>
+          <th class="text-center py-0 w-25" data-field="operate" data-formatter="operateFormatter"
+            data-events="operateEvents">Action</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+  <!--modal insert employee-->
+  <div class="modal hide" id="InsertEmployee" tabindex="-1" aria-labelledby="exampleModalLabel" data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Employee</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="" class="form-label">Name</label>
+              <input type="text" class="form-control" id="insert_name">
+              <span id="insert_validasi" class="text-danger"></span>
             </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                      <label for="" class="form-label">Name</label>
-                      <input type="hidden" class="form-control" id="id_idx">
-                      <input type="text" class="form-control" id="id_name">
-                      <span id="id_validasi" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                      <label for="" class="form-label">Age</label>
-                      <input type="number" class="form-control" id="id_age">
-                    </div> 
-                  </form>
+            <div class="mb-3">
+              <label for="" class="form-label">Age</label>
+              <input type="number" class="form-control" id="insert_age">
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" id="InsUp">Save</button>
-            </div>
-          </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="Insert">Save</button>
         </div>
       </div>
-
-      
-<!-- Modal Delete -->
-<div class="modal fade" id="ModalDelete" tabindex="-1" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header" style="background-color:#b73333">
-              <h5 class="modal-title text-white" id="exampleModalLabel">Delete Employee</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form method="POST" action="javascript:void(0)" role="form">
-              <div class="modal-body">
-                  <input id="idDel" type="hidden" class="form-control" name="id" value="">
-                  Are you sure you want to delete <b><span id="nameDel"></span></b> ?
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-danger cl" data-bs-dismiss="modal">No, cancel!</button>
-                  <button type="button" class="btn btn-primary" id="submit_delete">Yes, delete it!</button>
-              </div>
-          </form>
-      </div>
+    </div>
   </div>
-</div>
 
-    <!-- Optional JavaScript; choose one of the two! -->
+  <!--modal update employee-->
+  <div class="modal hide" id="UpdateEmployee" tabindex="-1" aria-labelledby="exampleModalLabel" data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Employee</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="" class="form-label">Name</label>
+              <input type="hidden" class="form-control" id="update_idx">
+              <input type="text" class="form-control" id="update_name">
+              <span id="update_validasi" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+              <label for="" class="form-label">Age</label>
+              <input type="number" class="form-control" id="update_age">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="Update">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
-    -->
+  <!-- Modal Delete -->
+  <div class="modal fade" id="ModalDelete" tabindex="-1" aria-labelledby="exampleModalLabel" data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color:#b73333">
+          <h5 class="modal-title text-white" id="exampleModalLabel">Delete Employee</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST" action="javascript:void(0)" role="form">
+          <div class="modal-body">
+            <input id="idDel" type="hidden" class="form-control" name="id" value="">
+            Are you sure you want to delete <b><span id="nameDel"></span></b> ?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger cl" data-bs-dismiss="modal">No, cancel!</button>
+            <button type="button" class="btn btn-primary" id="submit_delete">Yes, delete it!</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-    <script>
-      var $table = $('#table')
 
-      function operateFormatter(value, row, index) {
-        return [
-                '<a class="btn btn-success btn-sm like py-0" title="edit" href="javascript:void(0)">',
-                'Edit',
-                '</a> &nbsp',
-                '<a class="btn btn-danger btn-sm remove py-0" title="delete" href="javascript:void(0)">',
-                'Delete',
-                '</a>'
-            ].join('')
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+    crossorigin="anonymous"></script>
+
+  <script>
+    var $table = $('#table');
+
+    function responseHandler(res) {
+      res.total = res.data.length;
+
+      res.data.forEach(element => {
+        element.no = res.data.indexOf(element) + 1;
+      });
+
+      return res.data;
     }
 
-      window.operateEvents = {
-          //Update data modal
-          'click .like': function (e, value, row, index) {
-            CleanForm();
+    function operateFormatter(value, row, index) {
+      return [
+        '<a class="btn btn-success btn-sm update py-0" title="edit" href="javascript:void(0)">',
+        'Edit',
+        '</a> &nbsp',
+        '<a class="btn btn-danger btn-sm remove py-0" title="delete" href="javascript:void(0)">',
+        'Delete',
+        '</a>'
+      ].join('')
+    }
 
-              $("#id_idx").val(row.idx);
-              $("#id_name").val(row.name);
-              $("#id_age").val(row.age);
+    window.operateEvents = {
+      //Update data modal
+      'click .update': function (e, value, row, index) {
+        CleanForm();
 
-              $(".modal-title").text('Edit Employee');
-              $("#AddUpEmployee").modal('show');              
-          },
-          //Delete data modal
-          'click .remove': function (e, value, row, index) {
-              $(".cl").removeClass("d-none");
-              $(".modal-title").text('Delete Employee');
-              $("#idDel").val(row.idx);
-              $("#nameDel").text(row.name);
-              $("#ModalDelete").modal('show');
-          }
+        $("#update_idx").val(row.idx);
+        $("#update_name").val(row.name);
+        $("#update_age").val(row.age);
+
+        $(".modal-title").text('Update Employee');
+        $("#UpdateEmployee").modal('show');
+      },
+      //Delete data modal
+      'click .remove': function (e, value, row, index) {
+        $(".cl").removeClass("d-none");
+        $(".modal-title").text('Delete Employee');
+        $("#idDel").val(row.idx);
+        $("#nameDel").text(row.name);
+        $("#ModalDelete").modal('show');
       }
+    }
 
-        $("#AddModal").click(function(){
-            CleanForm();
-            $(".modal-title").text('Add Employee');
-            $("#AddUpEmployee").modal("show");
-        });
+    $("#InsertModal").click(function () {
+      CleanForm();
+      $(".modal-title").text('Add Employee');
+      $("#InsertEmployee").modal("show");
+    });
 
-        $(function() {
-          //Add & update data process
-          $('.modal-footer').on('click', '#InsUp', function () {
-              
-            var idx = 0;
-            
-            if($("#id_idx").val().length > 0){
-              idx = $("#id_idx").val();
-              idx = parseInt(idx);
+    $(function () {
+      //insert data process
+      $('.modal-footer').on('click', '#Insert', function () {
+        var Name = $("#insert_name").val();
+        var Age = parseInt($("#insert_age").val());
+
+
+        $.ajax({
+          type: 'POST',
+          url: "http://localhost:5000/api/Employee",
+          contentType: "application/json",
+          dataType: "json",
+          data: JSON.stringify({
+            Name: Name,
+            Age: Age
+          }),
+          success: function (data) {
+            if (data.success) {
+              Swal.fire({
+                icon: "success",
+                // title: "Insert Employee Success ...."
+                text: "Insert Employee Success ...."
+              });
+
+              $table.bootstrapTable('refresh');
+              $("#InsertEmployee").modal("hide");
+            } else {
+              Swal.fire({
+                icon: "error",
+                text: "Insert Employee Failed ...."
+              });
+              $table.bootstrapTable('refresh');
+              $("#InsertEmployee").modal("hide");
             }
+          },
+        });
+      });
 
-            var Age = parseInt($("#id_age").val());
-
-              $.ajax({
-                  type: 'POST',
-                  url: "https://localhost:5001/api/Employee",
-                  contentType: "application/json",
-                  dataType: "json",
-                  data: JSON.stringify({
-                        Idx: idx,
-                        Name: $("#id_name").val(),
-                        Age: Age
-                  }),
-                  success: function (data) {                 
-                      // if (data.length == 0) {
-                      //    alert("Add Employee Success ....");
-                      //    $table.bootstrapTable('refresh');
-                      // } else {
-                      //     alert("Add Employee Failed ....");
-                      //     $table.bootstrapTable('refresh');
-                      // }
-                  },
-              });
-
-              alert("Manage Employee Success ....");
-              $table.bootstrapTable('refresh');
-              $("#AddUpEmployee").modal("hide");
-          });
-
-           //Delete data process
-          $('.modal-footer').on('click', '#submit_delete', function () {             
-              var span_Text = document.getElementById("nameDel").innerText;
-              $.ajax({
-                  type: 'DELETE',
-                  url: "https://localhost:5001/api/Employee/"+$("#idDel").val(),
-                  contentType: "application/json",
-                  dataType: "json",
-                  success: function (data) {                     
-                      // if (data.Status != null) {
-                      //     alertData(data, "Delete");
-                      // }
-                  },
-              });
-
-              alert("Delete Employee Success ....");
-              $table.bootstrapTable('refresh');
-              $("#ModalDelete").modal("hide");
-          });  
-          
-          //check name
-          let input = document.querySelector('#id_name');
-
-          // Add an event listener to monitor changes
-          input.addEventListener('keyup', function (e) {
-              $.ajax({
-                  type: 'GET',
-                  url: "https://localhost:5001/api/Employee/GetName/?name="+input.value,
-                  contentType: "application/json",
-                  success: function (data) {
-                    if(data !== undefined ){
-                      $("#id_validasi").text("name already exist ..!");
-                      $("#InsUp").prop("disabled", true);
-                    }else{
-                      $("#id_validasi").text("");
-                      $("#InsUp").prop("disabled", false);
-                    }
-                  },
-              });
-          });
-        })
-
-        function CleanForm() {
-            $("#id_idx").val("");
-            $("#id_name").val("");
-            $("#id_age").val("");
-            $("#id_validasi").text("");
-            $("#InsUp").prop("disabled", false);
+      //update data process
+      $('.modal-footer').on('click', '#Update', function () {
+        var idx = 0;
+        if ($("#update_idx").val().length > 0) {
+          idx = $("#update_idx").val();
+          idx = parseInt(idx);
         }
 
-    
-    </script>
-  </body>
+        var Age = parseInt($("#update_age").val());
+
+        $.ajax({
+          type: 'PUT',
+          url: "http://localhost:5000/api/Employee/" + idx,
+          contentType: "application/json",
+          dataType: "json",
+          data: JSON.stringify({
+            Name: $("#update_name").val(),
+            Age: Age
+          }),
+          success: function (data) {
+            if (data.success) {
+              Swal.fire({
+                icon: "success",
+                // title: "Update Employee Success ...."
+                text: "Update Employee Success ...."
+              });
+
+              $table.bootstrapTable('refresh');
+              $("#UpdateEmployee").modal("hide");
+            } else {
+              Swal.fire({
+                icon: "error",
+                text: "Update Employee Failed ...."
+              });
+              $table.bootstrapTable('refresh');
+              $("#UpdateEmployee").modal("hide");
+            }
+          },
+        });
+      });
+
+      //Delete data process
+      $('.modal-footer').on('click', '#submit_delete', function () {
+        var span_Text = document.getElementById("nameDel").innerText;
+        $.ajax({
+          type: 'DELETE',
+          url: "http://localhost:5000/api/Employee/" + $("#idDel").val(),
+          contentType: "application/json",
+          dataType: "json",
+          success: function (data) {
+            if (data.success) {
+              $table.bootstrapTable('refresh');
+              $("#ModalDelete").modal("hide");
+            }
+          },
+        });
+      });
+
+      //check insert name 
+      let inputInsert = document.querySelector('#insert_name');
+      // Add an event listener to monitor changes
+      inputInsert.addEventListener('keyup', function (e) {
+        $.ajax({
+          type: 'GET',
+          url: "http://localhost:5000/api/Employee/GetName/?name=" + inputInsert.value,
+          contentType: "application/json",
+          success: function (data) {
+            if (data.data != null) {
+              $("#insert_validasi").text("name already exist ..!");
+              $("#insert").prop("disabled", true);
+            } else {
+              $("#insert_validasi").text("");
+              $("#insert").prop("disabled", false);
+            }
+          },
+        });
+      });
+
+      //check name update
+      let inputUpdate = document.querySelector('#update_name');
+      // Add an event listener to monitor changes
+      inputUpdate.addEventListener('keyup', function (e) {
+        $.ajax({
+          type: 'GET',
+          url: "http://localhost:5000/api/Employee/GetName/?name=" + inputUpdate.value,
+          contentType: "application/json",
+          success: function (data) {
+            console.log("cehck disini: ", data);
+            if (data.data != null) {
+              $("#update_validasi").text("name already exist ..!");
+              $("#Update").prop("disabled", true);
+            } else {
+              $("#update_validasi").text("");
+              $("#Update").prop("disabled", false);
+            }
+          },
+        });
+      });
+    })
+
+    function CleanForm() {
+      $("#update_idx").val("");
+      $("#update_name").val("");
+      $("#update_age").val("");
+      $("#update_validasi").text("");
+      $("#insert_name").val("");
+      $("#insert_age").val("");
+      $("#insert_validasi").text("");
+      $("#Insert").prop("disabled", false);
+      $("#Update").prop("disabled", false);
+    }
+  </script>
+</body>
+
 </html>
